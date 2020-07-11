@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,
+        body,
+        canvas {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            background-color: #fad377;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 使用canvs标签作为画图容器 -->
+    <canvas id="canvas" width="320" height="320"></canvas>
+    <button id="button">
+        悔棋
+    </button>
+    <script>
+
+        const canvas = document.getElementById('canvas'); //获取canvas节点
+        const ctx = canvas.getContext('2d');//返回canvas绘图上下文
+        let list = [];
+
+        for (let i = 1; i < 16; i++) {
+            ctx.beginPath(); //开始路径
+            ctx.moveTo(20, i * 20); // 起始坐标
+            ctx.lineTo(300, i * 20); // 结束坐标
+            ctx.stroke(); //绘制path
+        }
+
+        for (let i = 1; i < 16; i++) {
+            ctx.beginPath(); //开始路径
+            ctx.moveTo(i * 20, 20); // 起始坐标
+            ctx.lineTo(i * 20, 300); // 结束坐标
+            ctx.stroke(); //绘制path
+        }
+
+        //下棋
+        canvas.addEventListener("click", (e) => {
+            const x = Math.round(e.clientX / 20) * 20;
+            const y = Math.round(e.clientY / 20) * 20;
+            if (list.filter((item) => {
+                return item.x === x && item.y === y
+            }).length > 0) {
+                console.log("此处已经下过棋子");
+                return;
+            }
+            const color = list.length % 2 === 0 ? "#000" : "#fff";
+            list.push({
+                x,
+                y,
+                color
+            });
+            ctx.beginPath();//开始路径
+            ctx.arc(x, y, 10, 0, 2 * Math.PI);
+            //x(圆弧中心（圆心）的 x 轴坐标),y(圆弧中心（圆心）的 y 轴坐标),radius(半径),startAngle（圆弧的起始点）,endAngle（圆弧的终点）
+            ctx.fillStyle = color;//填充颜色
+            ctx.fill(); // 填充图形
+        });
+
+        //悔棋功能
+        button.addEventListener("click", (e) => {
+            ctx.clearRect(0, 0, 320, 320); //清除画布绘制图形
+            for (let i = 1; i < 16; i++) {
+                ctx.beginPath(); //开始路径
+                ctx.moveTo(20, i * 20); // 起始坐标
+                ctx.lineTo(300, i * 20); // 结束坐标
+                ctx.stroke(); //绘制path
+            }
+            for (let i = 1; i < 16; i++) {
+                ctx.beginPath(); //开始路径
+                ctx.moveTo(i * 20, 20); // 起始坐标
+                ctx.lineTo(i * 20, 300); // 结束坐标
+                ctx.stroke(); //绘制path
+            }
+            list.pop();//删除数组最后一项并返回删除后的结果
+            list.forEach((item) => {
+                ctx.beginPath();//开始路径
+                ctx.arc(item.x, item.y, 10, 0, 2 * Math.PI);
+                //x(圆弧中心（圆心）的 x 轴坐标),y(圆弧中心（圆心）的 y 轴坐标),radius(半径),startAngle（圆弧的起始点）,endAngle（圆弧的终点）
+                ctx.fillStyle = item.color;//填充颜色
+                ctx.fill(); // 填充图形
+            })
+        })
+
+    </script>
+</body>
+
+</html>
